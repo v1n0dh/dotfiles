@@ -19,7 +19,7 @@ call plug#begin('~/.vim/plugged')
 
 	Plug 'Valloric/YouCompleteMe'		"autocomplete
 	Plug 'vim-syntastic/syntastic'		"syntax checking
-	Plug 'Raimondi/delimitMate'		"autocomplete brackets
+	Plug 'jiangmiao/auto-pairs'		"autocomplete brackets
 	Plug 'ctrlpvim/ctrlp.vim'		"file finder
 
 call plug#end()
