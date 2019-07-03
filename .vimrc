@@ -35,6 +35,7 @@ colorscheme lucid
 let g:ycm_python_binary_path = 'python3'
 let g:ycm_autoclose_preview_window_after_completion = 1
 let g:ycm_min_num_of_chars_for_completion = 1
+let g:ycm_global_ycm_extra_conf = '~/.vim/plugged/YouCompleteMe/third_party/ycmd/cpp/ycm/.ycm_extra_conf.py'
 
 " split navigations
 
@@ -55,3 +56,4 @@ set statusline=
 set statusline+=%=
 set statusline+=\ %L 
 set statusline+=\ %n
+
