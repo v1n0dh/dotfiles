@@ -1,0 +1,21 @@
+{
+    "workbench.startupEditor": "newUntitledFile",
+    "window.menuBarVisibility": "toggle",
+    "window.zoomLevel": -1,
+    "editor.fontSize": 15,
+    "workbench.colorCustomizations": {
+        "[Default Dark+]": {
+            "editor.background": "#080808",
+            "terminal.background": "#080808",
+            "activityBar.background": "#0e0e0e",
+            "activityBar.activeBorder": "#080808",
+            "sideBar.background": "#0e0e0e",
+            "tab.activeBackground": "#080808",
+            "tab.inactiveBackground": "#0e0e0e",
+            "sideBarSectionHeader.background": "#0e0e0e",
+            "editorGroupHeader.tabsBackground": "#0e0e0e",
+            "statusBar.background": "#0e0e0e"
+        }
+    },
+    "explorer.confirmDelete": false
+}
