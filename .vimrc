@@ -12,12 +12,16 @@ autocmd! bufwritepost .vimrc source %	" Reload vimrc automatically
 set wildmenu
 set encoding=utf-8
 set backspace=indent,eol,start 		"backspace
+set tabstop=4
+set softtabstop=4
+set shiftwidth=4
+set noexpandtab
 
 " --- Plugins ---
 
 call plug#begin('~/.vim/plugged')
 
-	Plug 'Valloric/YouCompleteMe'		"autocomplete
+	" Plug 'Valloric/YouCompleteMe'		"autocomplete
 	Plug 'vim-syntastic/syntastic'		"syntax checking
 	Plug 'jiangmiao/auto-pairs'		"autocomplete brackets
 	Plug 'ctrlpvim/ctrlp.vim'		"file finder
@@ -27,15 +31,15 @@ call plug#end()
 " --- Color Schemes ---
 
 set background=dark
-set termguicolors
-colorscheme lucid
+" set termguicolors
+" colorscheme lucid
 
 " Autocomplete settings
 
-let g:ycm_python_binary_path = 'python3'
-let g:ycm_autoclose_preview_window_after_completion = 1
-let g:ycm_min_num_of_chars_for_completion = 1
-let g:ycm_global_ycm_extra_conf = '~/.vim/plugged/YouCompleteMe/third_party/ycmd/cpp/ycm/.ycm_extra_conf.py'
+" let g:ycm_python_binary_path = 'python3'
+" let g:ycm_autoclose_preview_window_after_completion = 1
+" let g:ycm_min_num_of_chars_for_completion = 1
+" let g:ycm_global_ycm_extra_conf = '~/.vim/plugged/YouCompleteMe/third_party/ycmd/cpp/ycm/.ycm_extra_conf.py'
 
 " split navigations
 
@@ -51,9 +55,8 @@ map <F4> :bnext<CR>		"next buffer
 
 " StatusBar
 
-set laststatus=2
-set statusline=
-set statusline+=%=
-set statusline+=\ %L 
-set statusline+=\ %n
-
+" set laststatus=2
+" set statusline=
+" set statusline+=%=
+" set statusline+=\ %L 
+" set statusline+=\ %n
