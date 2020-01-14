@@ -1,43 +1,24 @@
 #!/bin/bash
 
-Time(){
-	Time=$(date +"%a %I:%M%p")
-	icon=""
-	echo -e "$icon $Time"
+tiMe(){
+	tiMe=`date +"%a %I:%M%p"`
+	echo $tiMe
 }
 
 battery(){
-	charging=$(acpi -b | cut -d ":" -f 2 | awk '{print $1}')
-	battery=$(acpi -b | cut -d "," -f 2 | sed 's/.$//')
-	battery_percentage=$(acpi -b | cut -d "," -f 2 )
-	if [ "$charging" == "Charging," ]
-	then
-		icon=""
-	elif [ $battery -le 20 ]
-	then
-		icon=""
-	elif [ 20 -le $battery ] && [ $battery -le 40 ]
-	then
-		icon=""
-	elif [ 40 -le $battery ] && [ $battery -le 60 ]
-	then
-		icon=""
-	elif [ 60 -le $battery ] && [ $battery -le 80 ]
-	then
-		icon=""
+	status=`cat /sys/class/power_supply/BAT0/status`
+	capacity=`cat /sys/class/power_supply/BAT0/capacity`
+	if [[ $status == "Charging" || $status == "Full" ]]; then
+		echo "BAT: $capacity% ($status)"
 	else
-		icon=""
+		echo "BAT: $capacity%"
 	fi
-	echo -e "$icon$battery_percentage"
 }
 
-cpu(){
-	cpu=$(free -h | awk '/^Mem/ {print $3 "/" $2}')
-	icon=""
-	echo -e "$icon $cpu"
+user(){
+	echo `whoami`
 }
-while true
-do
-	xsetroot -name " $(cpu) | $(battery) | $(Time)"
-	sleep 10s
+
+while true; do
+	xsetroot -name " $(battery) | $(tiMe) | $(user)"
 done
