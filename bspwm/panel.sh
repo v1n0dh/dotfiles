@@ -1,6 +1,6 @@
 #!/bin/bash
 
-normal_color="#080808"
+normal_color="#353535"
 sel_color="#be0105"
 grey_color="#808080"
 white_color="#FFFFFF"
@@ -15,7 +15,7 @@ workspaces(){
 		elif [ "${SPACE:0:1}" == "f" ]; then
 			echo -n "^fg($grey_color) ^bg($normal_color)"
 		fi
-		echo -n "${SPACE:1}"
+		echo -n " ${SPACE:1}"
 	done
 }
 
@@ -24,12 +24,15 @@ setime(){
 	echo -n $tiMe
 }
 
+charging=0
 battery(){
 	status=`cat /sys/class/power_supply/BAT0/status`
 	capacity=`cat /sys/class/power_supply/BAT0/capacity`
 	if [[ $status == "Charging" || $status == "Full" ]]; then
+		charging=1
 		echo -n "BAT: $capacity% ($status)"
 	else
+		charging=0
 		echo -n "BAT: $capacity%"
 	fi
 }
@@ -42,14 +45,19 @@ opstatus(){
 	while true; do
 		workspaces
 		echo -n "^p("_RIGHT")"
-		echo -n "^p("-310")"
+		if [ $charging -eq 1 ]; then
+			echo -n "^p("-385")"
+		else
+			echo -n "^p("-300")"
+		fi
 		battery
 		echo -n " "
 		setime
 		echo -n " "
 		user
 		echo
+		sleep 1
 	done
 }
 
-opstatus | dzen2 -w 1920 -h 20 -e - -ta l -fn terminus
+opstatus | dzen2 -w 1920 -h 24 -e - -ta l -fn terminus -bg "#353535"
