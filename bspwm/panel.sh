@@ -15,7 +15,7 @@ workspaces(){
 		elif [ "${SPACE:0:1}" == "f" ]; then
 			echo -n "^fg($grey_color) ^bg($normal_color)"
 		fi
-		echo -n " ${SPACE:1}"
+		echo -n "${SPACE:1}"
 	done
 }
 
@@ -60,4 +60,4 @@ opstatus(){
 	done
 }
 
-opstatus | dzen2 -w 1920 -h 24 -e - -ta l -fn terminus -bg "#353535"
+opstatus | dzen2 -w 1920 -h 24 -e - -ta l -fn unifont -bg "#353535"
