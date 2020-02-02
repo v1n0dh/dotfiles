@@ -9,7 +9,7 @@
     dynamic_title = true
     urgent_on_bell = true
     clickable_url = true
-    font = monospace 10
+    font = unifont 12
     scrollback_lines = 1000
     search_wrap = true
     icon_name = terminal
@@ -32,8 +32,8 @@
     foreground = #FFFFFF
     #foreground_bold = #ffffff
     #foreground_dim = #888888
-    background = #080808
-    cursor = #1F1F1F
+    background = rgba(08, 08, 08, 0.8)
+    cursor = #be0105
 
     # if unset, will reverse foreground and background
     highlight = #2f2f2f
