@@ -17,6 +17,12 @@ set softtabstop=4
 set shiftwidth=4
 set noexpandtab
 
+" split below and right side of actual file
+set splitbelow splitright
+
+" remove extra white spaces in a line
+autocmd bufwritepost * %s/\s\+$//e
+
 " --- Plugins ---
 
 call plug#begin('~/.vim/plugged')
@@ -32,7 +38,7 @@ call plug#end()
 
 set background=dark
 " set termguicolors
-" colorscheme lucid
+" colorscheme monokai
 
 " Autocomplete settings
 
@@ -43,20 +49,20 @@ set background=dark
 
 " split navigations
 
-nnoremap <C-S> <C-W><C-J>
-nnoremap <C-W> <C-W><C-K>
-nnoremap <C-D> <C-W><C-L>
-nnoremap <C-A> <C-W><C-H>
+nnoremap <C-j> <C-W><C-J>
+nnoremap <C-k> <C-W><C-K>
+nnoremap <C-l> <C-W><C-L>
+nnoremap <C-h> <C-W><C-H>
 
 " Remappings
 
-map <F3> :bprevious<CR>		"previous buffer 
-map <F4> :bnext<CR>		"next buffer 
+map <F3> :bprevious<CR>		"previous buffer
+map <F4> :bnext<CR>		"next buffer
 
 " StatusBar
 
 " set laststatus=2
 " set statusline=
 " set statusline+=%=
-" set statusline+=\ %L 
+" set statusline+=\ %L
 " set statusline+=\ %n
