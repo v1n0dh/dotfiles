@@ -1,0 +1,4 @@
+#!/bin/sh
+
+nmcli device disconnect wlp1s0 2> /dev/null 1> /dev/null && \
+	notify-send "Disconnected Successfully"

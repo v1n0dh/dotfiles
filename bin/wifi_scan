@@ -1,0 +1,13 @@
+#!/bin/sh
+
+# getting the ssid or network name to connect
+ssid=`nmcli device wifi list | \
+		sed "s/^\*\+\s*//" | awk {'print $2'} | \
+		sed "/BSSID/d" | dmenu -l 5 -p "WIFI "`
+
+# prompt for entering password
+# passwd=`echo | dmenu -p password`
+
+# making connection with the network
+nmcli device wifi connect $ssid > /dev/null && notify-send "Connection Established" \
+   "You are now connected to $ssid network"

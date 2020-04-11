@@ -1,0 +1,38 @@
+#!/bin/sh
+
+settime(){
+	timE=`date +"%a %b %d %I:%M%p"`
+	echo $timE
+}
+
+battery(){
+	status=`cat /sys/class/power_supply/BAT0/status`
+	capacity=`cat /sys/class/power_supply/BAT0/capacity`
+	case $status in
+		"Charging" ) echo "BAT: $capacity% (Charging)" ;;
+		"Full" ) echo "BAT: $capacity% (Full)" ;;
+		"Discharging" )
+			if [ $capacity -lt 15 ]; then
+				echo " BAT: $capacity%"
+				# notify-send --urgency=critical "Low Battery!" "Please plug the charger"
+			else
+				echo "BAT: $capacity%"
+			fi
+			;;
+	esac
+}
+
+wifi(){
+	connection=`nmcli device status | grep ^wlp1s0 | awk {'print $4'}`
+	echo -n "WIFI: $connection"
+}
+
+mem(){
+	memory=`free -h | grep Mem | awk {'print $3 "/ " $2'} | sed "s/i//g"`
+	echo -n "MEM: $memory"
+}
+
+while true; do
+	xsetroot -name " `wifi` | `mem` | `battery` | `settime`" | tr "/n" " "
+	sleep 1s
+done
