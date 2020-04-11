@@ -1,4 +1,13 @@
-set nocompatible
+" --- Plugins ---
+
+call plug#begin('~/.vim/plugged')
+
+	Plug 'Valloric/YouCompleteMe'		"autocomplete
+	Plug 'vim-syntastic/syntastic'		"syntax checking
+	Plug 'jiangmiao/auto-pairs'		"autocomplete brackets
+	Plug 'ctrlpvim/ctrlp.vim'		"file finder
+
+call plug#end()
 
 " --- General Settings ---
 
@@ -16,6 +25,7 @@ set tabstop=4
 set softtabstop=4
 set shiftwidth=4
 set noexpandtab
+set nocompatible
 
 " split below and right side of actual file
 set splitbelow splitright
@@ -23,16 +33,6 @@ set splitbelow splitright
 " remove extra white spaces in a line
 autocmd bufwritepost * %s/\s\+$//e
 
-" --- Plugins ---
-
-call plug#begin('~/.vim/plugged')
-
-	" Plug 'Valloric/YouCompleteMe'		"autocomplete
-	Plug 'vim-syntastic/syntastic'		"syntax checking
-	Plug 'jiangmiao/auto-pairs'		"autocomplete brackets
-	Plug 'ctrlpvim/ctrlp.vim'		"file finder
-
-call plug#end()
 
 " --- Color Schemes ---
 
@@ -66,3 +66,4 @@ map <F4> :bnext<CR>		"next buffer
 " set statusline+=%=
 " set statusline+=\ %L
 " set statusline+=\ %n
+
