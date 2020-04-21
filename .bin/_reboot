@@ -1,5 +1,0 @@
-#!/bin/sh
-
-prompt=`echo -e "No\nYes" | dmenu -p "Reboot "`
-
-[ $prompt == "Yes" ] && reboot

@@ -1,0 +1,4 @@
+#!/bin/sh
+
+sudo killall dhcpcd > /dev/null; sudo ifconfig wlp1s0 down \
+	&& notify-send "Disconnected Successfully"

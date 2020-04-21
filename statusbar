@@ -1,0 +1,37 @@
+#!/bin/sh
+
+settime(){
+	timE=$(date +"%a %b %d %I:%M%p")
+	echo  " $timE"
+}
+
+battery(){
+	status=$(cat /sys/class/power_supply/BAT0/status)
+	capacity=$(cat /sys/class/power_supply/BAT0/capacity)
+	case $status in
+		"Charging" ) echo " $capacity%" ;;
+		"Full" ) echo " $capacity%" ;;
+		"Discharging" )
+			[ $capacity -lt 15 ] && echo "❗$capacity%" || echo " $capacity%" ;;
+	esac
+}
+
+mem(){
+	memory=$(free -h | grep Mem | awk {'print $3 "/ " $2'} | sed "s/i//g")
+	echo -n " $memory"
+}
+
+volume(){
+	vol=$(amixer -c 1 get Master | tail -n 1 | sed -r 's/.*\[(.*)%\].*/\1/')
+	echo -n " $vol"
+}
+wifi(){
+	connection=$(iwgetid | awk {'print $2'} | sed "s/ESSID:\"//" | sed "s/\"$//")
+	[ -z $connection ] && connection="--"
+	echo -n " $connection"
+}
+
+while true; do
+	xsetroot -name " $(wifi) | $(mem) | $(volume) | $(battery) | $(settime) |" | tr "\n" " "
+	sleep 1s
+done

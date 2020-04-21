@@ -1,0 +1,12 @@
+#!/bin/sh
+
+option=$(echo -e " Reboot\n ShutDown\n " | dmenu -l 2 -fn 'monospace-10')
+
+case $option in
+	" Reboot" )
+		prompt=$(echo -e "No\nYes" | dmenu -fn 'monospace-10' -p 'Reboot ')
+		[ "$prompt" == "Yes" ] && notify-send "System Rebooting..." && sleep 1s && reboot ;;
+	" ShutDown" )
+		prompt=$(echo -e "No\nYes" | dmenu -fn 'monospace-10' -p 'ShutDown ')
+		[ "$prompt" == "Yes" ] && notify-send "System Shutting Down..." && sleep 1s && poweroff ;;
+esac
