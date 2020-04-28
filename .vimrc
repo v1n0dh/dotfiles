@@ -1,8 +1,10 @@
+let mapleader = " "
+
 " --- Plugins ---
 
 call plug#begin('~/.vim/plugged')
 
-	Plug 'Valloric/YouCompleteMe'		"autocomplete
+	" Plug 'Valloric/YouCompleteMe'		"autocomplete
 	Plug 'vim-syntastic/syntastic'		"syntax checking
 	Plug 'jiangmiao/auto-pairs'		"autocomplete brackets
 	Plug 'ctrlpvim/ctrlp.vim'		"file finder
@@ -33,12 +35,14 @@ set splitbelow splitright
 " remove extra white spaces in a line
 autocmd bufwritepost * %s/\s\+$//e
 
+" Run xrdb command whenever Xresources or Xdefaults are updated
+autocmd BufWritePost *Xresources,*Xdefaults !xrdb -merge %
 
 " --- Color Schemes ---
 
 set background=dark
-" set termguicolors
-" colorscheme monokai
+"set termguicolors
+"colorscheme molokai
 
 " Autocomplete settings
 
@@ -49,21 +53,29 @@ set background=dark
 
 " split navigations
 
-nnoremap <C-j> <C-W><C-J>
-nnoremap <C-k> <C-W><C-K>
-nnoremap <C-l> <C-W><C-L>
-nnoremap <C-h> <C-W><C-H>
+noremap <C-J> <C-W><C-J>
+noremap <C-K> <C-W><C-K>
+noremap <C-L> <C-W><C-L>
+noremap <C-H> <C-W><C-H>
 
 " Remappings
 
-map <F3> :bprevious<CR>		"previous buffer
-map <F4> :bnext<CR>		"next buffer
+map <leader>p :bprevious<CR>		" previous buffer
+map <leader>n :bnext<CR>			" next buffer
+
+" mapping for substitute command
+nnoremap S :%s//g<left><left>
 
 " StatusBar
 
-" set laststatus=2
-" set statusline=
-" set statusline+=%=
-" set statusline+=\ %L
-" set statusline+=\ %n
+hi base ctermbg=black ctermfg=grey guibg=#080808 guifg=#808080
 
+set laststatus=2
+set statusline=
+set statusline+=%#base#
+set statusline+=\ %F
+set statusline+=\ %y
+set statusline+=\ %r
+set statusline+=%=
+set statusline+=\ %l/%L
+set statusline+=\ [%n]
