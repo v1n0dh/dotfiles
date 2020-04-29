@@ -7,7 +7,7 @@ call plug#begin('~/.vim/plugged')
 	" Plug 'Valloric/YouCompleteMe'		"autocomplete
 	Plug 'vim-syntastic/syntastic'		"syntax checking
 	Plug 'jiangmiao/auto-pairs'		"autocomplete brackets
-	Plug 'ctrlpvim/ctrlp.vim'		"file finder
+	" Plug 'ctrlpvim/ctrlp.vim'		"file finder
 
 call plug#end()
 
@@ -28,6 +28,7 @@ set softtabstop=4
 set shiftwidth=4
 set noexpandtab
 set nocompatible
+set path+=** 	" Search down into subfolders
 
 " split below and right side of actual file
 set splitbelow splitright
@@ -65,6 +66,9 @@ map <leader>n :bnext<CR>			" next buffer
 
 " mapping for substitute command
 nnoremap S :%s//g<left><left>
+
+" find command
+map <C-p> :find<right>
 
 " StatusBar
 
