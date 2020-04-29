@@ -68,7 +68,7 @@ map <leader>n :bnext<CR>			" next buffer
 nnoremap S :%s//g<left><left>
 
 " find command
-map <C-p> :find<right>
+map <leader>p :find<right>
 
 " StatusBar
 
