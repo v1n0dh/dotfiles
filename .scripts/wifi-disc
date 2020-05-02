@@ -1,4 +1,4 @@
 #!/bin/sh
 
-sudo killall dhcpcd > /dev/null; sudo ifconfig wlp1s0 down \
+nmcli device disconnect wlp1s0 \
 	&& notify-send "Disconnected Successfully"

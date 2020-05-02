@@ -1,29 +1,24 @@
 #!/bin/sh
 
-# ssid=$(nmcli device wifi list | \
-# 		sed "s/^\*\+\s//" | awk {'print $2'} | \
-# 		sed "/BSSID/d" | dmenu -fn "monospace-10" -l 5 -p "Wifi ")
-
-# making connction with the network
-# nmcli device wifi connect $ssid > /dev/null && notify-send "Connection Established" \
-# 	"You are now connected to $ssid network"
-
-# checking if wifi device is up
-ifconfig | grep wlp1s0 > /dev/null || sudo ifconfig wlp1s0 up
-
-# getting the ssid or network name to connect
-ssid=$(sudo iwlist wlp1s0 scanning | grep ESSID | sed "s/\s*ESSID://; s/^\"//; s/\"$//" \
-			| dmenu -fn monospace-10 -l 5 -p "Wifi ")
+# selecting the ssid form the list of available networks
+ssid=$(nmcli device wifi list | \
+	sed "s/^\*\+\s//" | awk {'print $2'} | \
+ 	sed "/BSSID/d" | dmenu -fn "freemono-10" -l 5 -p "Wifi ")
 
 # if no ssid selected then exit
 [ -z "$ssid" ] && exit
 
-# obtaining password
-[ -f ~/.wpa/$ssid.conf ] || passwd=$(echo | dmenu -fn monospace-10 -p "Password ")
+# check if already connected to the network
+list=$(nmcli connection show | awk {'print $1'})
+echo $list | grep $ssid > /dev/null || \
+	passwd=$(echo | dmenu -fn "freemono-10" -p "Password ") \
 
-[ -n "$passwd" ] && wpa_passphrase $ssid >> ~/.wpa/$ssid.conf $passwd
+# if not connected to network before then connect with password
+[ -n "$passwd" ] && \
+	nmcli device wifi connect $ssid password $passwd > /dev/null && \
+	notify-send "Connection Established" "You are now connected to $ssid network" && exit
 
-# connecting to the network via wpa supplicant
-sudo wpa_supplicant -B -i wlp1s0 -c ~/.wpa/$ssid.conf && sudo dhcpcd wlp1s0 > /dev/null \
-		&& notify-send "Connection Established" "You are now connected to $ssid network" \
-		|| notify-send "Error connecting $ssid network"
+# if already connected to network then connect without password
+nmcli device wifi connect $ssid > /dev/null && notify-send "Connection Established" \
+ 	"You are now connected to $ssid network"
+
