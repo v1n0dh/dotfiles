@@ -39,11 +39,17 @@ autocmd bufwritepost * %s/\s\+$//e
 " Run xrdb command whenever Xresources or Xdefaults are updated
 autocmd BufWritePost *Xresources,*Xdefaults !xrdb -merge %
 
+" source bashrc file whenever updated
+autocmd BufWritePost *bashrc !source %
+
+" enable executable permissions after updating a script
+autocmd BufWritePost *.sh,*.bash,*.py !chmod +x %
+
 " --- Color Schemes ---
 
 set background=dark
 "set termguicolors
-"colorscheme molokai
+"colorscheme default
 
 " Autocomplete settings
 
@@ -65,10 +71,10 @@ map <leader>p :bprevious<CR>		" previous buffer
 map <leader>n :bnext<CR>			" next buffer
 
 " mapping for substitute command
-nnoremap S :%s//g<left><left>
+nnoremap <leader>s :%s//g<left><left>
 
 " find command
-map <leader>p :find<right>
+map <leader>f :find <right>
 
 " StatusBar
 
@@ -77,9 +83,9 @@ hi base ctermbg=black ctermfg=grey guibg=#080808 guifg=#808080
 set laststatus=2
 set statusline=
 set statusline+=%#base#
+set statusline+=\ [%n]
 set statusline+=\ %F
-set statusline+=\ %y
 set statusline+=\ %r
 set statusline+=%=
-set statusline+=\ %l/%L
-set statusline+=\ [%n]
+set statusline+=\ %y
+set statusline+=\ %3l/%L
