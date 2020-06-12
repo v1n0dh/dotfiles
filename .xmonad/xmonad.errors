@@ -1,0 +1,35 @@
+
+xmonad.hs:30:7: warning: [-Wtabs]
+    Tab character found here, and in 37 further locations.
+    Please use spaces instead.
+   |
+30 | myGaps                  = 5
+   |       ^^
+
+xmonad.hs:64:97: warning: [-Wdeprecations]
+    In the use of ‘spacing’ (imported from XMonad.Layout.Spacing):
+    Deprecated: "Use spacingRaw instead."
+   |
+64 |      tiled = renamed [Replace "Tall"] $ gaps [(U,myGaps), (D,myGaps), (R,myGaps), (L,myGaps)] $ spacing myGaps $ Tall 1 (3/100) (1/2)
+   |                                                                                                 ^^^^^^^
+
+xmonad.hs:65:105: warning: [-Wdeprecations]
+    In the use of ‘spacing’ (imported from XMonad.Layout.Spacing):
+    Deprecated: "Use spacingRaw instead."
+   |
+65 |      mtiled = renamed [Replace "Mirror Tall"] $ gaps [(U,myGaps), (D,myGaps), (R,myGaps), (L,myGaps)] $ spacing myGaps $ Mirror (Tall 1 (3/100) (1/2))
+   |                                                                                                         ^^^^^^^
+
+xmonad.hs:66:107: warning: [-Wdeprecations]
+    In the use of ‘spacing’ (imported from XMonad.Layout.Spacing):
+    Deprecated: "Use spacingRaw instead."
+   |
+66 |      threeLayout = renamed [Replace "ThreeCol"] $ gaps [(U,myGaps), (D,myGaps), (R,myGaps), (L,myGaps)] $ spacing myGaps $ ThreeColMid 1 (3/100) (1/2)
+   |                                                                                                           ^^^^^^^
+
+xmonad.hs:67:96: warning: [-Wdeprecations]
+    In the use of ‘spacing’ (imported from XMonad.Layout.Spacing):
+    Deprecated: "Use spacingRaw instead."
+   |
+67 |      grid = renamed [Replace "Grid"] $ gaps [(U,myGaps), (D,myGaps), (R,myGaps), (L,myGaps)] $ spacing myGaps $ Grid(16/10)
+   |                                                                                                ^^^^^^^

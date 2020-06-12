@@ -1,0 +1,41 @@
+Config { font = "xft:Hack:size=9"
+       , additionalFonts = []
+       , borderColor = "black"
+       , border = BottomB
+       , bgColor = "#1a1a1a"
+       , fgColor = "#808080"
+       , alpha = 255
+       , position = Top
+       , textOffset = -1
+       , iconOffset = -1
+       , lowerOnStart = True
+       , pickBroadest = False
+       , persistent = False
+       , hideOnStart = False
+       , iconRoot = "."
+       , allDesktops = True
+       , overrideRedirect = True
+       , commands = [ Run Network "wlp1s0" [ "-t", "<tx>KB|<rx>KB"] 10
+                    , Run Cpu ["-t", "<fc=#6673bf>Cpu:</fc> <total>%"] 10
+		    , Run Wireless "wlp1s0" ["-t","<fc=#6673bf>Wifi:</fc> <essid>"] 10
+            , Run Memory ["-t","<fc=#6673bf>Mem:</fc> <usedratio>%"] 11
+		    , Run Battery [
+			      "-t", "<fc=#6673bf><acstatus>:</fc> <left>%",
+			      "--",
+			      --"-c", "charge_full",
+			      "-O", "AC",
+			      "-o", "Bat",
+			      "-L", "20", "-H", "90",
+			      "-h", "#00ff00",
+			      "-l", "#ff0000"
+			      ] 10
+			, Run Volume "ALC255" "Master" [
+				  "-t", "<fc=#6673bf>Vol:</fc> <volume>%"
+				  ] 10
+            , Run Date "%a %b %d %I:%M%p " "date" 10
+		    , Run StdinReader
+                    ]
+       , sepChar = "%"
+       , alignSep = "}{"
+       , template = " %StdinReader% } {  <fc=#6673bf>Net:</fc> %wlp1s0% | %wlp1s0wi% | %cpu% | %memory% | %ALC255:Master% | %battery% | <fc=#6673bf>%date%</fc>"
+
