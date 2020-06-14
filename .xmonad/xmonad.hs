@@ -86,6 +86,8 @@ myManageHook = composeAll
     , resource  =? "desktop_window" --> doIgnore
     , resource  =? "kdesktop"       --> doIgnore
 	, className =? "mpv"			--> doFloat
+	, title		=? "Copying files"  --> doCenterFloat
+	, title		=? "Open File"		--> doCenterFloat
 	, isFullscreen					--> (doF W.focusDown <+> doFullFloat)
     ]
 
