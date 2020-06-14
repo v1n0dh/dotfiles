@@ -1,0 +1,23 @@
+#!/bin/sh
+
+capacity=$(cat /sys/class/power_supply/BAT0/capacity)
+stat=$(cat /sys/class/power_supply/BAT0/status)
+
+[ $stat == "Charging" ] && exit
+
+[ $capacity  -gt 10] && \
+while true; do
+	capacity=$(cat /sys/class/power_supply/BAT0/capacity)
+	[ $capacity -lt 20 ] && \
+	notify-send --urgency=critical --icon=battery-level-10-symbolic.symbolic.png "Low Battery !!" "Please plug in charger" && \
+	break
+	sleep 60s
+done
+
+while true; do
+	capacity=$(cat /sys/class/power_supply/BAT0/capacity)
+	[ $capacity -lt 10 ] && \
+	notify-send  --urgency=critical --icon=battery-level-0-symbolic.symbolic.png "Warning !!" "Battery is about to die.." && \
+	break
+	sleep 60s
+done
