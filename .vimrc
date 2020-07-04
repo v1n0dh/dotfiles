@@ -1,11 +1,11 @@
-let mapleader = " "
+let mapleader = "\t"
 
-" --- Plugins ---
+"--- Plugins ---
 
 call plug#begin('~/.vim/plugged')
 
 	" Plug 'Valloric/YouCompleteMe'		"autocomplete
-	Plug 'vim-syntastic/syntastic'		"syntax checking
+	" Plug 'vim-syntastic/syntastic'		"syntax checking
 	Plug 'jiangmiao/auto-pairs'		"autocomplete brackets
 	" Plug 'ctrlpvim/ctrlp.vim'		"file finder
 
@@ -49,7 +49,7 @@ autocmd BufWritePost *.sh,*.bash,*.py !chmod +x %
 
 set background=dark
 "set termguicolors
-"colorscheme default
+"colorscheme twilight256
 
 " Autocomplete settings
 
@@ -60,21 +60,21 @@ set background=dark
 
 " split navigations
 
-noremap <C-J> <C-W><C-J>
-noremap <C-K> <C-W><C-K>
-noremap <C-L> <C-W><C-L>
-noremap <C-H> <C-W><C-H>
-
-" Remappings
-
-map <leader>p :bprevious<CR>		" previous buffer
-map <leader>n :bnext<CR>			" next buffer
+map <leader>j <C-W><C-J>
+map <leader>k <C-W><C-K>
+map <leader>l <C-W><C-L>
+map <leader>h <C-W><C-H>
 
 " mapping for substitute command
 nnoremap <leader>s :%s//g<left><left>
 
 " find command
 map <leader>f :find <right>
+
+" terminal
+map <leader>t :vertical terminal<CR>
+map <leader>T :terminal<CR>
+tnoremap <leader>n <C-W>N
 
 " StatusBar
 
