@@ -65,6 +65,10 @@ map <leader>k <C-W><C-K>
 map <leader>l <C-W><C-L>
 map <leader>h <C-W><C-H>
 
+" Remappings
+map <leader>p :bprevious<CR>
+map <leader>n :bnext<CR>
+
 " mapping for substitute command
 nnoremap <leader>s :%s//g<left><left>
 
