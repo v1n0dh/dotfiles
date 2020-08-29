@@ -1,19 +1,19 @@
-let mapleader = "\t"
+ let mapleader = "	"
 
 "--- Plugins ---
 
 call plug#begin('~/.vim/plugged')
 
-	" Plug 'Valloric/YouCompleteMe'		"autocomplete
-	" Plug 'vim-syntastic/syntastic'		"syntax checking
-	Plug 'jiangmiao/auto-pairs'		"autocomplete brackets
-	" Plug 'ctrlpvim/ctrlp.vim'		"file finder
+" Plug 'Valloric/YouCompleteMe'		"autocomplete
+Plug 'vim-syntastic/syntastic'		"syntax checking
+Plug 'jiangmiao/auto-pairs'			"autocomplete brackets
+Plug 'tpope/vim-surround'
 
 call plug#end()
 
 " --- General Settings ---
 
-syntax on	" Enables syntax
+syntax enable	" Enables syntax
 set number
 set hlsearch	" Hilights the search element
 set incsearch	" Ignore case sensitive in search
@@ -29,6 +29,7 @@ set shiftwidth=4
 set noexpandtab
 set nocompatible
 set path+=** 	" Search down into subfolders
+set hidden
 
 " split below and right side of actual file
 set splitbelow splitright
@@ -49,7 +50,19 @@ autocmd BufWritePost *.sh,*.bash,*.py !chmod +x %
 
 set background=dark
 "set termguicolors
-"colorscheme twilight256
+let g:gruvbox_contrast_dark = 'hard'
+let g:gruvbox_vert_split = 'bg2'
+colorscheme gruvbox
+
+" Syntastic settings
+let g:syntastic_always_populate_loc_list = 0
+let g:syntastic_auto_loc_list = 0
+let g:syntastic_check_on_open = 0
+let g:syntastic_check_on_wq = 0
+
+let g:syntastic_mode_map = { 'mode': 'passive', 'active_filetypes': [],'passive_filetypes': [] }
+nnoremap <leader>e :SyntasticCheck<CR>
+nnoremap <leader>E :SyntasticToggleMode<CR>
 
 " Autocomplete settings
 
@@ -60,36 +73,54 @@ set background=dark
 
 " split navigations
 
-map <leader>j <C-W><C-J>
-map <leader>k <C-W><C-K>
-map <leader>l <C-W><C-L>
-map <leader>h <C-W><C-H>
+map <C-j> <C-w>j
+map <C-k> <C-w>k
+map <C-l> <C-w>l
+map <C-h> <C-w>h
 
-" Remappings
-map <leader>p :bprevious<CR>
-map <leader>n :bnext<CR>
+map <leader>j <C-w>J
+map <leader>k <C-w>K
+map <leader>l <C-w>L
+map <leader>h <C-w>H
+
+" tab navigations
+map <leader>n :tabnext<CR>
+map <leader>p :tabprevious<CR>
+
+" buffer navigations
+map <C-p> :bprevious<CR>
+map <C-n> :bnext<CR>
 
 " mapping for substitute command
 nnoremap <leader>s :%s//g<left><left>
-
-" find command
-map <leader>f :find <right>
 
 " terminal
 map <leader>t :vertical terminal<CR>
 map <leader>T :terminal<CR>
 tnoremap <leader>n <C-W>N
 
+" find command
+map <leader>/ :find <right>
+
+" highlight code block
+map <leader>v V$%
+
 " StatusBar
 
-hi base ctermbg=black ctermfg=grey guibg=#080808 guifg=#808080
+hi base ctermbg=236 ctermfg=256 guibg=#1a1a1a guifg=#aaaaaa
 
 set laststatus=2
 set statusline=
-set statusline+=%#base#
+set statusline+=%#LineNr#
 set statusline+=\ [%n]
-set statusline+=\ %F
+set statusline+=\ %8F
+set statusline+=\ %M
+set statusline+=\ %3y
 set statusline+=\ %r
+set statusline+=%#warningmsg#
+set statusline+=%{SyntasticStatuslineFlag()}
+set statusline+=%#LineNr#
 set statusline+=%=
-set statusline+=\ %y
-set statusline+=\ %3l/%L
+set statusline+=\ Format:%{&ff}
+set statusline+=\ [%p%%]
+set statusline+=\ %2l/%L
