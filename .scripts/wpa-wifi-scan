@@ -1,0 +1,31 @@
+#!/bin/bash
+
+# generate a list of available wifi devices
+ssidlist=$(sudo iwlist wlp1s0 scan | grep ESSID | \
+		sed "s/\s*ESSID:\"//; s/\"$//")
+
+# if no wifi device available then exit
+[ -z $ssidlist ] && exit
+
+# killall running processes
+pgrep wpa_supplicant > /dev/null && sudo killall wpa_supplicant
+pgrep dhclient > /dev/null && sudo killall dhclient
+
+# echo generated list to dmenu and select wifi network to connect with
+ssid=$(echo $ssidlist | sed "s/\s/\n/" | dmenu -fn "Inconsolata-11" -l 5 -p "Wifi ")
+
+# if nothing selected then exit
+[ -z $ssid ] && exit
+
+# check for password if previously connected
+ls -l $HOME/.config/.wpa_conf | grep $ssid.conf > /dev/null && prev_conn=1 || prev_conn=0
+
+# if previously not connected to wifi network then ask for password
+[ $prev_conn -ne 1 ] && passwd=$(echo | dmenu -fn "Inconsolata-11" -p "Password ") && \
+		wpa_passphrase $ssid $passwd > $HOME/.config/.wpa_conf/$ssid.conf
+
+# connect to wifi network
+sudo wpa_supplicant -c $HOME/.config/.wpa_conf/$ssid.conf -i wlp1s0 -B && \
+		sudo dhclient wlp1s0 && \
+		notify-send "Connection Established" "You are now connected to $ssid network" || \
+		notify-send --urgency=critical "Error connecting $ssid network"
