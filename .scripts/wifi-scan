@@ -1,24 +1,59 @@
-#!/bin/sh
+#!/bin/bash
 
-# selecting the ssid form the list of available networks
-ssid=$(nmcli device wifi list | \
-	sed "s/^\*\+\s//" | awk {'print $2'} | \
- 	sed "/BSSID/d" | dmenu -fn "freemono-10" -l 5 -p "Wifi ")
+# fetch the password from the dmenu prompt
+fetch_passwd() {
+    passwd=$(echo | dmenu  -p "Password ")
+    echo $passwd
+}
+
+# store password configuration in local directory
+store_passwd() {
+    [ $# -ne 2 ] && return 0
+    wpa_passphrase "${1}" ${2} > $HOME/.config/.wpa_conf/"${1}.conf"
+}
+
+# initiate connection to the network
+connect_to_network() {
+    [ $# -ne 1 ] && return 0
+    sudo wpa_supplicant -c $HOME/.config/.wpa_conf/"${1}.conf" -i wlp1s0 -B > /dev/null && \
+        sudo dhclient wlp1s0 > /dev/null && \
+        echo 1 || echo 0
+}
+
+# if network card is down then raise the network card
+ifconfig | grep "wlp1s0" > /dev/null  || sudo ifconfig wlp1s0 up
+
+# get ssid list of active networks
+ssidlist=$(sudo iwlist wlp1s0 scan | grep ESSID | \
+        sed "s/\s*ESSID:\"//; s/\"$//; s/^/'/g; s/$/'/g")
+
+# if no active networks then exit
+[[ -z ${ssidlist} ]] && exit
+
+# kill background services if running
+pgrep wpa_supplicant > /dev/null && sudo killall wpa_supplicant
+pgrep dhclient > /dev/null && sudo killall dhclient
+
+# select the essid of netowrk
+ssid=$(echo ${ssidlist} | sed "s/'\s'/\n/g; s/'//g" | dmenu  -l 5 -p "Wifi ")
 
 # if no ssid selected then exit
-[ -z "$ssid" ] && exit
+[[ -z ${ssid} ]] && exit
 
-# check if already connected to the network
-list=$(nmcli connection show | awk {'print $1'})
-echo $list | grep $ssid > /dev/null || \
-	passwd=$(echo | dmenu -fn "freemono-10" -p "Password ") \
+# check if already connected to ssid
+ssidpath=$(find $HOME/.config/.wpa_conf/ -name "${ssid}.conf")
 
-# if not connected to network before then connect with password
-[ -n "$passwd" ] && \
-	nmcli device wifi connect $ssid password $passwd > /dev/null && \
-	notify-send "Connection Established" "You are now connected to $ssid network" && exit
+# if not connected network then fetch password using prompt
+if [ -z "${ssidpath}" ]; then
+    passwd=$(fetch_passwd) && [ -z $passwd ] && exit
+    $(store_passwd "${ssid}" ${passwd})
+fi
 
-# if already connected to network then connect without password
-nmcli device wifi connect $ssid > /dev/null && notify-send "Connection Established" \
- 	"You are now connected to $ssid network"
+# connect to the network
+conn=$(connect_to_network "${ssid}")
 
+if [ ${conn} -eq 1 ]; then
+    notify-send "Connection Established" "You are now connected to $ssid network"
+else
+    notify-send --urgency=critical "Error connecting $ssid network"
+fi
