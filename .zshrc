@@ -30,7 +30,3 @@ bindkey -M menuselect 'j' vi-down-line-or-history
 
 # Load zsh-syntax-highlighting; should be last
 source /usr/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh 2> /dev/null
-
-PATH="$PATH:/usr/sbin"
-export GOPATH=~/go
-PATH="$PATH:$GOPATH/bin"
