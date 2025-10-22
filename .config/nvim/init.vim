@@ -8,6 +8,7 @@ call plug#begin('~/.vim/plugged')
 
 Plug 'jiangmiao/auto-pairs'
 Plug 'tpope/vim-surround'
+Plug 'maxmx03/solarized.nvim'
 
 call plug#end()
 
@@ -34,8 +35,18 @@ set hidden
 set splitbelow splitright		" split rightside or below the current window
 set noswapfile
 filetype plugin indent on
+
 " color scheme settings
+colorscheme solarized
 set background=dark
+set termguicolors
+" For transparency
+highlight Normal guibg=none
+highlight NonText guibg=none
+highlight Normal ctermbg=none
+highlight NonText ctermbg=none
+
+
 " autocompletion settings
 set omnifunc=syntaxcomplete#Complete
 set completeopt=menuone,preview,longest
