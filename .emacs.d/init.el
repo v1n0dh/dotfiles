@@ -4,6 +4,8 @@
 
 ;;; code:
 
+(add-to-list 'load-path "~/.emacs.d/init.el")
+
 ;;; Personal Information
 (setq user-full-name "Vinodh Vinny"
       user-mail-address "vinodhvinny27@gmail.com")
@@ -25,11 +27,18 @@
 (setq large-file-warning-threshold 200000000)  ;; set large files warning to 200MB
 (setq vc-follow-symlinks t)              ; always follow symlinks
 (global-auto-revert-mode t)              ; auto update buffer to get sync
+(global-display-line-numbers-mode t)
 
 ;;; Look and Feel
+(setq org-src-fontify-natively t)
 (add-to-list 'custom-theme-load-path "~/.emacs.d/themes")
-(load-theme 'gotham t)
-(set-face-attribute 'default nil :font "Hack" :height 90)
+(add-to-list 'default-frame-alist '(alpha-background . 85)) ; For transparency
+(load-theme 'solarized-dark t)
+(set-face-attribute 'default nil :font "Terminus" :height 110)
+(set-face-attribute 'font-lock-comment-face nil
+                    :slant 'italic)
+(set-face-attribute 'font-lock-keyword-face nil
+                    :slant 'italic)
 (setq-default tab-width 4
           indent-tabs-mode nil)
 (setq column-number-mode t)
@@ -57,16 +66,12 @@
 
 ;;; Global key bindings
 (global-set-key (kbd "C-x k") 'kill-this-buffer)
-(global-set-key (kbd "C-x n") 'display-line-numbers-mode)
 
 ;;; Global Hooks
 (add-hook 'before-save-hook 'whitespace-cleanup)
 (add-hook 'after-init-hook 'global-company-mode)
 (add-hook 'dired-mode-hook 'dired-mode-customization)
 (add-hook 'eshell-mode-hook 'eshell-mode-customization)
-;(add-hook 'c-mode 'lsp)
-;(add-hook 'c++-mode 'lsp)
-;(add-hook 'java-mode-hook 'java-meghanada-mode-config)
 
 ;;; Initialize package source
 (require 'package)
@@ -86,8 +91,12 @@
   (package-install 'use-package))
 (require 'use-package)
 
-(use-package diminish
+(use-package gotham-theme
   :ensure t)
+
+(use-package diminish
+  :ensure t
+  :config (which-key-mode))
 
 ;;; Completion engine Ivy, Swiper and Counsel
 (use-package ivy
@@ -106,6 +115,8 @@
 (global-set-key (kbd "C-s") 'swiper-isearch)
 (global-set-key (kbd "M-x") 'counsel-M-x)
 (global-set-key (kbd "C-x C-f") 'counsel-find-file)
+(global-set-key (kbd "C-c f") 'counsel-projectile-find-file)
+(global-set-key (kbd "C-c g") 'counsel-projectile-grep)
 (global-set-key (kbd "M-y") 'counsel-yank-pop)
 (global-set-key (kbd "<f1> f") 'counsel-describe-function)
 (global-set-key (kbd "<f1> v") 'counsel-describe-variable)
@@ -116,6 +127,9 @@
 (global-set-key (kbd "C-x b") 'ivy-switch-buffer)
 (global-set-key (kbd "C-c v") 'ivy-push-view)
 (global-set-key (kbd "C-c V") 'ivy-pop-view)
+
+(use-package which-key
+  :ensure t)
 
 ;;; Evil Mode customization
 (use-package evil
@@ -132,7 +146,8 @@
 (use-package exec-path-from-shell
   :ensure t
   :config
-  (exec-path-from-shell-initialize))
+  (unless (file-remote-p  default-directory)
+  (exec-path-from-shell-initialize)))
 
 ;;; Programming
 
@@ -144,6 +159,7 @@
   (setq company-idle-delay 0)
   (setq company-minimum-prefix-length 2)
   (setq company-selection-wrap-around t)
+  (setq lsp-completion-provider :capf)
   :bind (:map company-active-map
               ("C-n" . company-select-next-or-abort)
               ("C-p" . company-select-previous-or-abort)))
@@ -180,7 +196,10 @@
 (use-package lsp-mode
   :ensure t
   :config
-  (setq lsp-print-io nil)
+  (setq lsp-print-io nil
+        lsp-enable-file-watchers nil
+        lsp-keep-workspace-alive nil
+        lsp-auto-guess-root t)
   ; lsp-ui gives documentation boxes and sidebar info
   (use-package lsp-ui
     :ensure t
@@ -191,51 +210,136 @@
   ;(require 'lsp-ui-imenu)
   ;(add-hook 'lsp-after-open-hook 'lsp-enable-imenu))
 
-;; LSP backend for company-mode
-(use-package company-lsp
-  :ensure t)
-
 ;; C/C++ programming
 (setq c-default-style "linux"
       c-basic-offset 4)
 
-; ccls language server for C, C++
-(use-package ccls
-  :ensure t
+; clangd language server for C, C++
+(use-package lsp-clangd
+  :ensure nil ;; bundled with lsp-mode
+  :after lsp-mode
   :config
-  (setq ccls-executable "ccls")
-  (setq lsp-prefer-flymake nil)
-  (setq-default flycheck-disabled-checkers '(c/c++-clang c/c++-cppcheck c/c++-gcc))
-  :hook ((c-mode c++-mode) .
-         (lambda () (require 'ccls) (lsp))))
+  (setq lsp-clients-clangd-executable "clangd"))
 
-;; go programming
-(use-package go-mode
-  :ensure t)
+(add-to-list 'load-path "~/.emacs.d/lisp/")
+(require 'linux_kernel_dev)
 
-;; Java programming
-(use-package lsp-java
-  :ensure t
+;; Tree-sitter Configuration
+(setq treesit-language-source-alist
+   '((bash "https://github.com/tree-sitter/tree-sitter-bash")
+     (c "https://github.com/tree-sitter/tree-sitter-c")
+     (cpp "https://github.com/tree-sitter/tree-sitter-cpp")
+     (rust "https://github.com/tree-sitter/tree-sitter-rust" "v0.23.3")
+     (cmake "https://github.com/uyha/tree-sitter-cmake")
+     (elisp "https://github.com/Wilfred/tree-sitter-elisp")
+     (go "https://github.com/tree-sitter/tree-sitter-go")
+     (json "https://github.com/tree-sitter/tree-sitter-json")
+     (make "https://github.com/alemuller/tree-sitter-make")
+     (markdown "https://github.com/ikatyang/tree-sitter-markdown")
+     (python "https://github.com/tree-sitter/tree-sitter-python")
+     (toml "https://github.com/tree-sitter/tree-sitter-toml")
+     (yaml "https://github.com/ikatyang/tree-sitter-yaml")))
+
+(dolist (hook '(c-mode-hook c-ts-mode-hook
+                c++-mode-hook c++-ts-mode-hook
+                python-mode-hook python-ts-mode-hook
+                rust-mode-hook rust-ts-mode-hook))
+  (add-hook hook #'lsp))
+(add-to-list 'auto-mode-alist '("[Mm]akefile\\'" . makefile-mode))
+
+;;; Org-mode Configuration
+
+(use-package org
+  :ensure nil ; do not try to install it as it is built-in
+  :mode ("\\.org\\'" . org-mode)
   :init
-  (defun vinny/java-mode-config ()
-    (lsp))
-  :config
-  (setq lsp-java-save-action-organize-imports nil)
+  (setq org-agenda-files '("~/Documents/Org_docs"))
   :hook
-  (java-mode . vinny/java-mode-config)
-  :after (lsp lsp-mode))
+  ;; Enable nicer indentation and visual line wrapping
+  ((org-mode . org-indent-mode)
+   (org-mode . visual-line-mode))
+  :config
+  (setq org-M-RET-may-split-line '((default . nil)))
+  (setq org-insert-heading-respect-content t)
+  ;; Record a timestamp when marking tasks as done
+  (setq org-log-done 'time)
+  (setq org-log-into-drawer t)
+  (electric-indent-mode -1)
 
-(use-package meghanada
-  :ensure t)
+  ;; Refresh org-agenda after rescheduling a task.
+  (defun org-agenda-refresh (&rest _)
+    "Refresh all `org-agenda' buffers."
+    (dolist (buffer (buffer-list))
+      (with-current-buffer buffer
+        (when (derived-mode-p 'org-agenda-mode)
+          (org-agenda-maybe-redo)))))
 
-(defun java-meghanada-mode-config ()
-  (require 'meghanada)
-  (meghanada-mode t)
-  (flycheck-mode +1)
-  ; use code format before save
-  (add-hook 'before-save-hook 'meghanada-code-beautify-before-save)
-  (setq meghanada-java-path "java")
-  (setq meghanada-maven-path "mvn"))
+  (advice-add 'org-schedule :after #'org-agenda-refresh)
 
+  ;; Set a different font for org headings
+  (dolist (face '((org-level-1 . 1.3)
+                  (org-level-2 . 1.2)
+                  (org-level-3 . 1.15)
+                  (org-level-4 . 1.1)
+                  (org-level-5 . 1.05)
+                  (org-level-6 . 1.0)
+                  (org-level-7 . 1.0)
+                  (org-level-8 . 1.0)))
+    (set-face-attribute (car face) nil
+                        :font "Terminus"
+                        :weight 'bold
+                        :height (cdr face)))
+  ;; custom org agenda view
+  (setq org-agenda-custom-commands
+        '(("v" "My Agenda View"
+          ((agenda "" ((org-agenda-span 1)))
+           (tags-todo "PRIORITY=\"A\""
+                 ((org-agenda-skip-function '(org-agenda-skip-entry-if 'todo 'done))
+                  (org-agenda-overriding-header "Top Priority Tasks:")))
+           (tags-todo "PRIORITY=\"B\""
+                 ((org-agenda-skip-function '(org-agenda-skip-entry-if 'todo 'done))
+                  (org-agenda-overriding-header "Medium Priority Tasks:")))
+           (tags-todo "PRIORITY=\"C\""
+                 ((org-agenda-skip-function '(org-agenda-skip-entry-if 'todo 'done))
+                  (org-agenda-overriding-header "Low Priority Tasks:")))
+           (agenda "")
+           (alltodo ""))))))
+
+;; defining recurring tasks and easily scheduling them.
+(use-package org-recur
+  :ensure t
+  :hook ((org-mode . org-recur-mode)
+         (org-agenda-mode . org-recur-agenda-mode))
+  :demand t
+  :config
+  ;; Keybindings for org-recur:
+  (define-key org-recur-mode-map (kbd "C-c d") 'org-recur-finish)
+  (define-key org-recur-agenda-mode-map (kbd "d") 'org-recur-finish)
+  (define-key org-recur-agenda-mode-map (kbd "C-c d") 'org-recur-finish)
+
+  ;; Mark finished recurring tasks as DONE and archive if you want:
+  (setq org-recur-finish-done t
+        org-recur-finish-archive t))
+
+;; For nicer bullet points
+(use-package org-bullets
+  :ensure t
+  :config
+  (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
+
+;; Table of Contents
+(use-package toc-org
+  :ensure t
+  :commands toc-org-enable
+  :init (add-hook 'org-mode-hook 'toc-org-enable))
+
+;; Useful global keybindings
+(define-key global-map "\C-cl" 'org-store-link)
+(define-key global-map "\C-ca" 'org-agenda)
+(define-key global-map "\C-cc" 'org-capture)
+
+(use-package htmlize
+  :ensure t
+  :config (setq org-html-htmlize-output-type 'inline-css))
 
 ;;; init.el ends here
